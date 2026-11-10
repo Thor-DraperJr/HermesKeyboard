@@ -273,7 +273,14 @@ private fun EditableSecretField(
                             val conn = url.openConnection() as java.net.HttpURLConnection
                             conn.requestMethod = "GET"
                             when (testAuthStyle) {
-                                ApiAuthStyle.BEARER -> conn.setRequestProperty("Authorization", "Bearer ${current.trim()}")
+                                ApiAuthStyle.BEARER -> {
+                                    conn.setRequestProperty("Authorization", "Bearer ${current.trim()}")
+                                    if (fullUrl.contains("githubcopilot.com")) {
+                                        conn.setRequestProperty("Editor-Version", "vscode/1.104.1")
+                                        conn.setRequestProperty("User-Agent", "HermesAgent/1.0")
+                                        conn.setRequestProperty("Copilot-Integration-Id", "vscode-chat")
+                                    }
+                                }
                                 ApiAuthStyle.X_API_KEY -> {
                                     conn.setRequestProperty("x-api-key", current.trim())
                                     conn.setRequestProperty("anthropic-version", "2023-06-01")
@@ -1731,6 +1738,14 @@ private fun CloudTab(
             )
         }
 
+        // GitHub Copilot OAuth token
+        EditableSecretField(
+            secretKey = Settings.PREF_COPILOT_API_KEY,
+            label = stringResource(R.string.copilot_api_key),
+            placeholder = "Paste your GitHub Copilot token (ghu_...)",
+            testUrl = "https://api.githubcopilot.com/models"
+        )
+
         // Groq API key
         EditableSecretField(
             secretKey = Settings.PREF_GROQ_API_KEY,
@@ -2806,6 +2821,9 @@ fun createAISettings(context: Context) = listOf(
     },
     Setting(context, Settings.PREF_GITHUB_API_KEY, R.string.github_api_key) { setting ->
         SecureTextInputPreference(setting, Defaults.PREF_GITHUB_API_KEY)
+    },
+    Setting(context, Settings.PREF_COPILOT_API_KEY, R.string.copilot_api_key) { setting ->
+        SecureTextInputPreference(setting, Defaults.PREF_COPILOT_API_KEY)
     },
     Setting(context, Settings.PREF_OLLAMA_URL, R.string.ollama_url) { setting ->
         TextInputPreference(setting, Defaults.PREF_OLLAMA_URL)

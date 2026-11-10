@@ -2377,6 +2377,7 @@ public final class InputLogic {
 
     /** Returns true if at least one cloud API key is set or a local backend URL is configured. */
     public boolean isAnyAiConfigured() {
+        if (!helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_COPILOT_API_KEY).isEmpty()) return true;
         if (!helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_GROQ_API_KEY).isEmpty()) return true;
         if (!helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_GEMINI_API_KEY).isEmpty()) return true;
         if (!helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_OPENROUTER_API_KEY).isEmpty()) return true;
@@ -2394,6 +2395,8 @@ public final class InputLogic {
         if (model == null || model.isEmpty()) return false;
         String backend = model.contains(":") ? model.substring(0, model.indexOf(":")) : model;
         switch (backend) {
+            case "copilot":
+                return !helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_COPILOT_API_KEY).isEmpty();
             case "gemini":
                 return !helium314.keyboard.latin.ai.SecureApiKeys.getKey(helium314.keyboard.latin.settings.Settings.PREF_GEMINI_API_KEY).isEmpty();
             case "groq":

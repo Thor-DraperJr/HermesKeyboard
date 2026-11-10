@@ -499,7 +499,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         if (isSending) return
         val cloudModel = allModels.firstOrNull { m ->
             val v = m.modelValue
-            v.startsWith("groq:") || v.startsWith("openrouter:") ||
+            v.startsWith("copilot:") || v.startsWith("groq:") || v.startsWith("openrouter:") ||
                 v.startsWith("gemini:") || v.startsWith("anthropic:") ||
                 v.startsWith("openai-cloud:")
         } ?: return

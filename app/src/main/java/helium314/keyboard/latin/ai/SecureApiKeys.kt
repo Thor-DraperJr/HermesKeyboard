@@ -86,6 +86,7 @@ object SecureApiKeys {
             Settings.PREF_BRAVE_SEARCH_API_KEY -> Defaults.PREF_BRAVE_SEARCH_API_KEY
             Settings.PREF_TAVILY_API_KEY -> Defaults.PREF_TAVILY_API_KEY
             Settings.PREF_GITHUB_API_KEY -> Defaults.PREF_GITHUB_API_KEY
+            Settings.PREF_COPILOT_API_KEY -> Defaults.PREF_COPILOT_API_KEY
             else -> ""
         }
         // Defensive trim: API keys must never contain leading/trailing whitespace.
@@ -121,7 +122,8 @@ object SecureApiKeys {
             Settings.PREF_OPENAI_API_KEY,
             Settings.PREF_BRAVE_SEARCH_API_KEY,
             Settings.PREF_TAVILY_API_KEY,
-            Settings.PREF_GITHUB_API_KEY
+            Settings.PREF_GITHUB_API_KEY,
+            Settings.PREF_COPILOT_API_KEY
         )
         val securePrefs = prefs ?: return
         var migrated = false
@@ -132,6 +134,56 @@ object SecureApiKeys {
                 plainPrefs.edit().remove(key).apply()
                 migrated = true
             }
+        }
+    }
+
+    /**
+     * One-time local provisioning hook: if `.hermes_provision.json` exists in
+     * the app's external files directory, import its keys into
+     * EncryptedSharedPreferences, optionally set `ai_model` and mark onboarding
+     * done, and immediately delete the file from disk.
+     */
+    @JvmStatic
+    fun importProvisionFileIfPresent(context: Context) {
+        try {
+            val dir = context.getExternalFilesDir(null) ?: return
+            val file = java.io.File(dir, ".hermes_provision.json")
+            if (!file.exists()) return
+            val raw = file.readText(Charsets.UTF_8)
+            file.delete()
+            val json = org.json.JSONObject(raw)
+            val keyMap = mapOf(
+                "copilot_api_key" to Settings.PREF_COPILOT_API_KEY,
+                "github_api_key" to Settings.PREF_GITHUB_API_KEY,
+                "groq_api_key" to Settings.PREF_GROQ_API_KEY,
+                "gemini_api_key" to Settings.PREF_GEMINI_API_KEY,
+                "openrouter_api_key" to Settings.PREF_OPENROUTER_API_KEY,
+                "anthropic_api_key" to Settings.PREF_ANTHROPIC_API_KEY,
+                "openai_api_key" to Settings.PREF_OPENAI_API_KEY,
+                "tavily_api_key" to Settings.PREF_TAVILY_API_KEY,
+                "brave_search_api_key" to Settings.PREF_BRAVE_SEARCH_API_KEY
+            )
+            var importedCount = 0
+            for ((jsonKey, prefKey) in keyMap) {
+                val v = json.optString(jsonKey, "").trim()
+                if (v.isNotEmpty()) {
+                    setKey(prefKey, v)
+                    importedCount++
+                }
+            }
+            val plainPrefs = helium314.keyboard.latin.utils.DeviceProtectedUtils.getSharedPreferences(context)
+            val model = json.optString("ai_model", "").trim()
+            plainPrefs.edit().apply {
+                if (model.isNotEmpty()) {
+                    putString(Settings.PREF_AI_MODEL, model)
+                    putString(Settings.PREF_AI_BACKEND, model.substringBefore(":"))
+                }
+                putBoolean(Settings.PREF_DESKDROP_ONBOARDING_DONE, true)
+                apply()
+            }
+            android.util.Log.i("SecureApiKeys", "Provisioned $importedCount encrypted key(s) and deleted drop file")
+        } catch (e: Exception) {
+            android.util.Log.e("SecureApiKeys", "Failed to import provision file", e)
         }
     }
 }

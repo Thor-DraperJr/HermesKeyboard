@@ -61,6 +61,7 @@
     <string name="brave_search_api_key">Brave Search API Key (optional)</string>
     <string name="tavily_api_key">Tavily API Key (recommended)</string>
     <string name="github_api_key">GitHub Personal Access Token (optional)</string>
+    <string name="copilot_api_key">GitHub Copilot OAuth Token (ghu_...)</string>
     <string name="ollama_url">Ollama URL</string>
     <string name="ollama_model">Ollama Model</string>
     <string name="ollama_test_connection">Test connection</string>

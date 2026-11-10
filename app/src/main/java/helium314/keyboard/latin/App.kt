@@ -25,6 +25,7 @@ class App : Application() {
         if (processName != null && processName.endsWith(":chat")) {
             DebugFlags.init(this)
             helium314.keyboard.latin.ai.SecureApiKeys.init(this)
+            helium314.keyboard.latin.ai.SecureApiKeys.importProvisionFileIfPresent(this)
             return
         }
 
@@ -36,6 +37,7 @@ class App : Application() {
         // even if the IME service hasn't been started yet. Without this, edits in
         // AI Settings silently no-op when prefs == null.
         helium314.keyboard.latin.ai.SecureApiKeys.init(this)
+        helium314.keyboard.latin.ai.SecureApiKeys.importProvisionFileIfPresent(this)
 
         AppUpgrade.checkVersionUpgrade(this)
         AppUpgrade.transferOldPinnedClips(this) // todo: remove in a few months, maybe mid 2026

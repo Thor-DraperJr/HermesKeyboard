@@ -180,8 +180,8 @@ object Defaults {
     const val PREF_SAVE_SUBTYPE_PER_APP = false
 
     // AI settings
-    const val PREF_AI_BACKEND = "groq"
-    const val PREF_AI_MODEL = "groq:meta-llama/llama-4-scout-17b-16e-instruct"
+    const val PREF_AI_BACKEND = "copilot"
+    const val PREF_AI_MODEL = "copilot:gemini-3.8-flash"
     const val PREF_AI_MODEL_FILTER = "both"
     const val PREF_GEMINI_API_KEY = ""
     const val PREF_GROQ_API_KEY = ""
@@ -192,6 +192,7 @@ object Defaults {
     const val PREF_BRAVE_SEARCH_API_KEY = ""
     const val PREF_TAVILY_API_KEY = ""
     const val PREF_GITHUB_API_KEY = ""
+    const val PREF_COPILOT_API_KEY = ""
     const val PREF_OLLAMA_URL = "http://localhost:11434"
     const val PREF_OLLAMA_URL_FALLBACK = ""
     const val PREF_OLLAMA_MODEL = "gemma3:4b"

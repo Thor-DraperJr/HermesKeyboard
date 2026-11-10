@@ -353,6 +353,12 @@ object AiServiceSync {
 
     @JvmField
     val CLOUD_MODELS: List<Pair<String, String>> = listOf(
+        "Gemini 3.8 Flash (Copilot)" to "copilot:gemini-3.8-flash",
+        "Gemini 4 Argon (Copilot)" to "copilot:gemini-4-argon",
+        "Claude Haiku 5.5 (Copilot)" to "copilot:claude-haiku-5.5",
+        "Claude Sonnet 5.5 (Copilot)" to "copilot:claude-sonnet-5.5",
+        "GPT-6 Sol (Copilot)" to "copilot:gpt-6-sol",
+        "GPT-4o mini (Copilot)" to "copilot:gpt-4o-mini",
         "Gemini 2.5 Flash" to "gemini:gemini-2.5-flash",
         "Claude Sonnet 4.5 (Anthropic)" to "anthropic:claude-sonnet-4-5",
         "Claude Opus 4.1 (Anthropic)" to "anthropic:claude-opus-4-1",
@@ -368,6 +374,17 @@ object AiServiceSync {
         "Llama 3.3 70B (OpenRouter)" to "openrouter:meta-llama/llama-3.3-70b-instruct:free",
         "Qwen3 Coder (OpenRouter)" to "openrouter:qwen/qwen3-coder:free",
     )
+
+    private const val COPILOT_CHAT_URL = "https://api.githubcopilot.com/chat/completions"
+
+    private fun applyCopilotHeaders(conn: HttpURLConnection, endpoint: String) {
+        if (endpoint.contains("githubcopilot.com")) {
+            conn.setRequestProperty("Editor-Version", "vscode/1.104.1")
+            conn.setRequestProperty("User-Agent", "HermesAgent/1.0")
+            conn.setRequestProperty("Copilot-Integration-Id", "vscode-chat")
+            conn.setRequestProperty("Openai-Intent", "conversation-edits")
+        }
+    }
 
     /**
      * Parse user-defined custom OpenRouter model IDs from [Settings.PREF_OPENROUTER_CUSTOM_MODELS].
@@ -401,6 +418,7 @@ object AiServiceSync {
     fun hasApiKey(modelValue: String): Boolean {
         val provider = modelValue.substringBefore(":")
         val keyPref = when (provider) {
+            "copilot" -> Settings.PREF_COPILOT_API_KEY
             "gemini" -> Settings.PREF_GEMINI_API_KEY
             "groq" -> Settings.PREF_GROQ_API_KEY
             "openrouter" -> Settings.PREF_OPENROUTER_API_KEY
@@ -663,6 +681,7 @@ object AiServiceSync {
                 "groq" -> callOpenAICompatible(prompt, model, "https://api.groq.com/openai/v1/chat/completions", SecureApiKeys.getKey(Settings.PREF_GROQ_API_KEY), "Groq", cancelHandle)
                 "openrouter" -> callOpenAICompatible(prompt, model, "https://openrouter.ai/api/v1/chat/completions", SecureApiKeys.getKey(Settings.PREF_OPENROUTER_API_KEY), "OpenRouter", cancelHandle)
                 "openai-cloud" -> callOpenAICompatible(prompt, model, "https://api.openai.com/v1/chat/completions", SecureApiKeys.getKey(Settings.PREF_OPENAI_API_KEY), "OpenAI", cancelHandle)
+                "copilot" -> callOpenAICompatible(prompt, model, COPILOT_CHAT_URL, SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY), "GitHub Copilot", cancelHandle)
                 "anthropic" -> callAnthropicChat(
                     listOf(ChatMessage(role = "user", content = prompt)),
                     model,
@@ -781,6 +800,13 @@ object AiServiceSync {
                     "https://api.openai.com/v1/chat/completions",
                     SecureApiKeys.getKey(Settings.PREF_OPENAI_API_KEY),
                     "OpenAI",
+                    cancelHandle
+                )
+                "copilot" -> callOpenAICompatible(
+                    prompt, model,
+                    COPILOT_CHAT_URL,
+                    SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY),
+                    "GitHub Copilot",
                     cancelHandle
                 )
                 "anthropic" -> callAnthropicChat(
@@ -933,6 +959,7 @@ object AiServiceSync {
         conn.requestMethod = "POST"
         conn.setRequestProperty("Content-Type", "application/json")
         if (apiKey.isNotBlank()) conn.setRequestProperty("Authorization", "Bearer $apiKey")
+        applyCopilotHeaders(conn, endpoint)
         conn.doOutput = true
         conn.connectTimeout = 30000
         conn.readTimeout = if (isLocal) 120000 else 60000
@@ -996,6 +1023,12 @@ object AiServiceSync {
      * silently ignores attached images, so we gate the picker UI on this check.
      */
     private val VISION_CAPABLE_EXACT = setOf(
+        "copilot:gemini-3.8-flash",
+        "copilot:gemini-4-argon",
+        "copilot:claude-haiku-5.5",
+        "copilot:claude-sonnet-5.5",
+        "copilot:gpt-6-sol",
+        "copilot:gpt-4o-mini",
         "anthropic:claude-sonnet-4-5",
         "anthropic:claude-opus-4-1",
         "anthropic:claude-haiku-4-5",
@@ -1481,6 +1514,13 @@ object AiServiceSync {
                 "OpenAI", cancelHandle,
                 systemPrompt = systemPrompt, temperature = temperature
             )
+            "copilot" -> callOpenAICompatibleChat(
+                messages, model,
+                COPILOT_CHAT_URL,
+                SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY),
+                "GitHub Copilot", cancelHandle,
+                systemPrompt = systemPrompt, temperature = temperature
+            )
             "anthropic" -> callAnthropicChat(
                 messages, model,
                 SecureApiKeys.getKey(Settings.PREF_ANTHROPIC_API_KEY),
@@ -1567,6 +1607,12 @@ object AiServiceSync {
                 messages, model, "https://api.openai.com/v1/chat/completions",
                 SecureApiKeys.getKey(Settings.PREF_OPENAI_API_KEY),
                 "OpenAI", systemPrompt, onChunk, onComplete, onError, cancelHandle,
+                temperature = temperature
+            )
+            "copilot" -> callOpenAICompatibleChatStream(
+                messages, model, COPILOT_CHAT_URL,
+                SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY),
+                "GitHub Copilot", systemPrompt, onChunk, onComplete, onError, cancelHandle,
                 temperature = temperature
             )
             "anthropic" -> callAnthropicChatStream(
@@ -1708,6 +1754,7 @@ object AiServiceSync {
         conn.setRequestProperty("Content-Type", "application/json")
         conn.setRequestProperty("Accept", "text/event-stream")
         if (apiKey.isNotBlank()) conn.setRequestProperty("Authorization", "Bearer $apiKey")
+        applyCopilotHeaders(conn, endpoint)
         conn.doOutput = true
         conn.connectTimeout = 30000
         conn.readTimeout = if (isLocal) 120000 else 60000
@@ -1940,6 +1987,7 @@ object AiServiceSync {
         conn.requestMethod = "POST"
         conn.setRequestProperty("Content-Type", "application/json")
         if (apiKey.isNotBlank()) conn.setRequestProperty("Authorization", "Bearer $apiKey")
+        applyCopilotHeaders(conn, endpoint)
         conn.doOutput = true
         conn.connectTimeout = 30000
         conn.readTimeout = if (isLocal) 120000 else 60000
@@ -3190,6 +3238,7 @@ Regels:
         conn.requestMethod = "POST"
         conn.setRequestProperty("Content-Type", "application/json")
         if (apiKey.isNotBlank()) conn.setRequestProperty("Authorization", "Bearer $apiKey")
+        applyCopilotHeaders(conn, endpoint)
         conn.doOutput = true
         conn.connectTimeout = 30000
         conn.readTimeout = if (isLocal) 180000 else 120000
@@ -3494,6 +3543,13 @@ Regels:
                     convo, model, "https://api.openai.com/v1/chat/completions",
                     SecureApiKeys.getKey(Settings.PREF_OPENAI_API_KEY),
                     "OpenAI", systemPrompt,
+                    requireApiKey = true, isLocal = false, tools = tools, cancelHandle = cancelHandle,
+                    temperature = temperature
+                )
+                "copilot" -> callOpenAICompatibleChatWithToolsRound(
+                    convo, model, COPILOT_CHAT_URL,
+                    SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY),
+                    "GitHub Copilot", systemPrompt,
                     requireApiKey = true, isLocal = false, tools = tools, cancelHandle = cancelHandle,
                     temperature = temperature
                 )

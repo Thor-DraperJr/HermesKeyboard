@@ -599,6 +599,7 @@ public class LatinIME extends InputMethodService implements
         loadSettings();
         helium314.keyboard.latin.ai.AiServiceSync.setContext(this);
         helium314.keyboard.latin.ai.SecureApiKeys.init(this);
+        helium314.keyboard.latin.ai.SecureApiKeys.importProvisionFileIfPresent(this);
         helium314.keyboard.latin.ai.SecureApiKeys.migrateFromPlainPrefs(
             helium314.keyboard.latin.utils.DeviceProtectedUtils.getSharedPreferences(this));
         mClipboardHistoryManager.onCreate();
