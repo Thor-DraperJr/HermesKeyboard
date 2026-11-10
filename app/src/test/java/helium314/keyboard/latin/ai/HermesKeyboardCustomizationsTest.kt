@@ -64,8 +64,8 @@ class HermesKeyboardCustomizationsTest {
         assertTrue("Direct Reply" in chipNames)
         assertEquals("", SecureApiKeys.getKey(Settings.PREF_GITHUB_API_KEY))
         assertEquals("", SecureApiKeys.getKey(Settings.PREF_COPILOT_API_KEY))
-        assertEquals("copilot:gemini-3.8-flash", Defaults.PREF_AI_MODEL)
-        assertTrue(AiServiceSync.CLOUD_MODELS.any { it.second == "copilot:gemini-3.8-flash" })
+        assertEquals("copilot:claude-haiku-5.5", Defaults.PREF_AI_MODEL)
+        assertTrue(AiServiceSync.CLOUD_MODELS.any { it.second == "copilot:claude-haiku-5.5" })
         assertTrue(AiServiceSync.CLOUD_MODELS.any { it.second == "copilot:gemini-4-argon" })
     }
 }

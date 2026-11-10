@@ -181,7 +181,7 @@ object Defaults {
 
     // AI settings
     const val PREF_AI_BACKEND = "copilot"
-    const val PREF_AI_MODEL = "copilot:gemini-3.8-flash"
+    const val PREF_AI_MODEL = "copilot:claude-haiku-5.5"
     const val PREF_AI_MODEL_FILTER = "both"
     const val PREF_GEMINI_API_KEY = ""
     const val PREF_GROQ_API_KEY = ""
