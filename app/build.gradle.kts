@@ -67,7 +67,7 @@ android {
             applicationIdSuffix = ".debug"
             signingConfig = signingConfigs.getByName("debug")
         }
-        base.archivesBaseName = "Deskdrop_" + defaultConfig.versionName
+        base.archivesBaseName = "HermesKeyboard_" + defaultConfig.versionName
         // got a little too big for GitHub after some dependency upgrades, so we remove the largest dictionary
         androidComponents.onVariants { variant: ApplicationVariant ->
             if (variant.buildType == "debug") {
@@ -81,7 +81,7 @@ android {
         applicationVariants.all {
             outputs.all {
                 (this as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName =
-                    "Deskdrop_" + defaultConfig.versionName + ".apk"
+                    "HermesKeyboard_" + defaultConfig.versionName + ".apk"
             }
         }
     }

@@ -85,6 +85,7 @@ object SecureApiKeys {
             Settings.PREF_OPENAI_API_KEY -> Defaults.PREF_OPENAI_API_KEY
             Settings.PREF_BRAVE_SEARCH_API_KEY -> Defaults.PREF_BRAVE_SEARCH_API_KEY
             Settings.PREF_TAVILY_API_KEY -> Defaults.PREF_TAVILY_API_KEY
+            Settings.PREF_GITHUB_API_KEY -> Defaults.PREF_GITHUB_API_KEY
             else -> ""
         }
         // Defensive trim: API keys must never contain leading/trailing whitespace.
@@ -119,7 +120,8 @@ object SecureApiKeys {
             Settings.PREF_ANTHROPIC_API_KEY,
             Settings.PREF_OPENAI_API_KEY,
             Settings.PREF_BRAVE_SEARCH_API_KEY,
-            Settings.PREF_TAVILY_API_KEY
+            Settings.PREF_TAVILY_API_KEY,
+            Settings.PREF_GITHUB_API_KEY
         )
         val securePrefs = prefs ?: return
         var migrated = false

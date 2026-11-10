@@ -191,15 +191,16 @@ object Defaults {
     const val PREF_OPENAI_API_KEY = ""
     const val PREF_BRAVE_SEARCH_API_KEY = ""
     const val PREF_TAVILY_API_KEY = ""
+    const val PREF_GITHUB_API_KEY = ""
     const val PREF_OLLAMA_URL = "http://localhost:11434"
     const val PREF_OLLAMA_URL_FALLBACK = ""
     const val PREF_OLLAMA_MODEL = "gemma3:4b"
     const val PREF_OPENAI_COMPAT_URL = ""
     const val PREF_OPENAI_COMPAT_URL_FALLBACK = ""
     const val PREF_OPENAI_COMPAT_API_KEY = ""
-    const val PREF_AI_INSTRUCTION = "Improve this text. Fix grammar and spelling. Keep the same language. Return only the improved text, nothing else."
-    const val PREF_AI_LOREBOOK = ""
-    const val PREF_AI_ALLOW_NETWORK_TOOLS = false
+    const val PREF_AI_INSTRUCTION = "Write or improve this text using Thor's communication rules (ASD-STE100 style): active voice, simple present or past tense, one idea per sentence (under 25 words), common words, no em-dashes, no emoji, no AI filler ('game changer', 'unlock', 'dive in', 'seamless', 'robust', 'leverage'), and no 'it is not X, it is Y' contrasts. Return only the final text, nothing else."
+    const val PREF_AI_LOREBOOK = "Thor Draper Jr. — Microsoft HLS Security Solution Engineer based in Charlotte, NC. Communication style: direct, concise, active voice, short sentences, zero AI filler, no em-dashes, no 'not X, it is Y' contrasts."
+    const val PREF_AI_ALLOW_NETWORK_TOOLS = true
     const val PREF_AI_ALLOW_ACTIONS = false
     const val PREF_AI_INLINE_MODEL = "" // empty = use main AI model
     const val PREF_AI_CONVERSATION_MODEL = "" // empty = use main AI model
@@ -214,10 +215,10 @@ object Defaults {
     const val PREF_AI_VOICE_ENGINE = "google"
     const val PREF_AI_VOICE_HINT_SHOWN_COUNT = 0
     const val PREF_AI_MCP_MODEL = "" // empty = use main AI model
-    const val PREF_AI_PROMPT_ALIASES = """[{"name":"formal","prompt":"Rewrite this text in a more formal and professional tone. Return only the rewritten text, nothing else."},{"name":"grammar","prompt":"Fix all grammar, spelling, and punctuation errors in this text. Do not change the meaning or tone. Return only the corrected text, nothing else."},{"name":"summarize","prompt":"Summarize this text in 1-3 concise sentences. Return only the summary, nothing else."},{"name":"shorten","prompt":"Make this text shorter and more concise while keeping the same meaning. Return only the shortened text, nothing else."},{"name":"reply","prompt":"Write a short, natural reply to this message. Match the tone and language of the original. Return only the reply, nothing else."}]"""
+    const val PREF_AI_PROMPT_ALIASES = """[{"name":"reply","prompt":"Write a direct, natural reply to this message in Thor's voice: active voice, short sentences, no em-dashes, no AI filler. Return only the reply, nothing else."},{"name":"ste","prompt":"Rewrite this text following ASD-STE100 Simplified Technical English: one idea per sentence (under 20 words), active voice, simple present or past tense, no em-dashes, no emoji, no filler, and no 'not X, it is Y' contrasts. Return only the rewritten text, nothing else."},{"name":"formal","prompt":"Rewrite this text in a concise, executive professional tone using active voice and short sentences. No em-dashes or filler. Return only the rewritten text, nothing else."},{"name":"grammar","prompt":"Fix all grammar, spelling, and punctuation errors in this text without changing its meaning or voice. Return only the corrected text, nothing else."},{"name":"summarize","prompt":"Summarize this text in 1-3 direct sentences starting with the state or result. Return only the summary, nothing else."},{"name":"shorten","prompt":"Make this text shorter and more direct while keeping the exact meaning. Return only the shortened text, nothing else."}]"""
     const val PREF_AI_TONE_MODEL = "" // empty = use main AI model
     const val PREF_AI_ASSIST_MODEL = "" // empty = use main AI model
-    const val PREF_AI_TONE_CHIPS = """[{"name":"Formal","prompt":"Rewrite this text in a more formal and professional tone. Keep the same language as the original text. Return only the rewritten text, nothing else."},{"name":"Casual","prompt":"Rewrite this text in a casual, relaxed tone. Keep the same language as the original text. Return only the rewritten text, nothing else."},{"name":"Friendly","prompt":"Rewrite this text in a warm, friendly tone. Keep the same language as the original text. Return only the rewritten text, nothing else."},{"name":"Shorter","prompt":"Make this text shorter and more concise. Keep the same meaning, tone, and language. Return only the rewritten text, nothing else."},{"name":"Longer","prompt":"Expand this text with more detail while keeping the same tone, meaning, and language. Return only the rewritten text, nothing else."},{"name":"Grammar","prompt":"Fix all grammar, spelling, and punctuation errors in this text. Do not change the meaning, tone, or language. Return only the corrected text, nothing else."},{"name":"English","prompt":"Translate this text to English. Return only the translation, nothing else."}]"""
+    const val PREF_AI_TONE_CHIPS = """[{"name":"Thor STE","prompt":"Rewrite this text in Thor's ASD-STE100 style: active voice, one idea per sentence, under 20 words per sentence, no em-dashes, no emoji, no filler. Return only the rewritten text, nothing else."},{"name":"Direct Reply","prompt":"Write a concise, natural text message reply in Thor's voice. Active voice, no em-dashes, no filler. Return only the reply, nothing else."},{"name":"Executive","prompt":"Rewrite this text as a crisp executive update (state, evidence, next action). Active voice, no em-dashes. Return only the rewritten text, nothing else."},{"name":"Casual","prompt":"Rewrite this text in a relaxed, natural conversational tone without slang or filler. Return only the rewritten text, nothing else."},{"name":"Shorter","prompt":"Cut this text to the essential point in 1-2 short sentences. Return only the shortened text, nothing else."},{"name":"Grammar","prompt":"Fix grammar, spelling, and punctuation errors without changing tone or meaning. Return only the corrected text, nothing else."}]"""
     const val PREF_AI_CLOUD_FALLBACK = false
 
     const val PREF_WHISPER_URL = ""

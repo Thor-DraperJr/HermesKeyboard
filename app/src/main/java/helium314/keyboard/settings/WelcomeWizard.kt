@@ -295,7 +295,7 @@ fun WelcomeWizard(
                 )
             } else if (step <= 3) {
                 Text(
-                    stringResource(R.string.setup_steps_title, "Deskdrop"),
+                    stringResource(R.string.setup_steps_title, "Hermes Keyboard"),
                     style = MaterialTheme.typography.displayMedium,
                     textAlign = TextAlign.Center,
                     color = titleColor,
@@ -452,8 +452,8 @@ fun WelcomeWizard(
                 }
                 if (step == 2) {
                     SetupStep(
-                        "Turn on Deskdrop",
-                        "Turn on Deskdrop to use it as your keyboard.",
+                        "Turn on Hermes Keyboard",
+                        "Turn on Hermes Keyboard to use it as your keyboard.",
                         "Open Keyboard Settings"
                     ) {
                         val intent = Intent()
@@ -463,8 +463,8 @@ fun WelcomeWizard(
                     }
                 } else { // step 3
                     SetupStep(
-                        "Switch to Deskdrop",
-                        "Select Deskdrop as your active keyboard.",
+                        "Switch to Hermes Keyboard",
+                        "Select Hermes Keyboard as your active keyboard.",
                         "Switch Keyboard"
                     ) { imm.showInputMethodPicker()  }
                 }
@@ -477,7 +477,7 @@ fun WelcomeWizard(
                     // Step 4: Cloud vs Local choice (Advanced users only)
                     4 -> {
                         Text(
-                            "How do you want to use Deskdrop?",
+                            "How do you want to use Hermes Keyboard?",
                             style = MaterialTheme.typography.headlineMedium,
                             color = DeskdropTeal,
                             textAlign = TextAlign.Center,

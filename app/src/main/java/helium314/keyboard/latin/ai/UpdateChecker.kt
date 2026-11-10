@@ -22,7 +22,7 @@ import java.net.URL
 object UpdateChecker {
 
     private const val TAG = "UpdateChecker"
-    private const val REPO = "SvReenen/Deskdrop"
+    private const val REPO = "Thor-DraperJr/HermesKeyboard"
     private const val API_URL = "https://api.github.com/repos/$REPO/releases/latest"
     private const val CHANNEL_ID = "deskdrop_update"
     private const val NOTIFICATION_ID = 9001
@@ -205,7 +205,7 @@ object UpdateChecker {
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notif_reminder)
-            .setContentTitle("Deskdrop $version available")
+            .setContentTitle("Hermes Keyboard $version available")
             .setContentText("Tap to download the update")
             .setContentIntent(updatePending)
             .setAutoCancel(true)

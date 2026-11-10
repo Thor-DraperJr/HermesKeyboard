@@ -78,6 +78,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_OPENAI_API_KEY = "openai_api_key";
     public static final String PREF_BRAVE_SEARCH_API_KEY = "brave_search_api_key";
     public static final String PREF_TAVILY_API_KEY = "tavily_api_key";
+    public static final String PREF_GITHUB_API_KEY = "github_api_key";
     public static final String PREF_OLLAMA_URL = "ollama_url";
     public static final String PREF_OLLAMA_URL_FALLBACK = "ollama_url_fallback";
     public static final String PREF_OLLAMA_MODEL = "ollama_model";

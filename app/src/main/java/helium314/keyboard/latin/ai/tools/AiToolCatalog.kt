@@ -13,6 +13,7 @@ object AiToolCatalog {
 
     /** Registered tools. Order is preserved in the tool list returned to the LLM. */
     val tools: List<AiTool> = listOf(
+        GitHubTool(),
         SetReminderTool(),
         CalendarTool(),
         NavigationTool(),

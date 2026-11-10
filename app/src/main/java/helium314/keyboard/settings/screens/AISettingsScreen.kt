@@ -1888,6 +1888,27 @@ private fun CloudTab(
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    "GitHub integration",
+                    style = MaterialTheme.typography.titleSmall,
+                    color = teal,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
+                )
+
+                EditableSecretField(
+                    secretKey = Settings.PREF_GITHUB_API_KEY,
+                    label = stringResource(R.string.github_api_key),
+                    placeholder = "Paste your GitHub Personal Access Token"
+                )
+                Text(
+                    "Used by the built-in github_api tool to list private repos, inspect issues/PRs, open issues, and post comments.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                    modifier = Modifier.padding(horizontal = 16.dp)
+                )
+
                 // Model Presets section — combined list (cloud + cached local)
                 val combinedForCloudTab = remember(ollamaModels.size) {
                     val items = mutableListOf<Pair<String, String>>()
@@ -2782,6 +2803,9 @@ fun createAISettings(context: Context) = listOf(
     },
     Setting(context, Settings.PREF_TAVILY_API_KEY, R.string.tavily_api_key) { setting ->
         SecureTextInputPreference(setting, Defaults.PREF_TAVILY_API_KEY)
+    },
+    Setting(context, Settings.PREF_GITHUB_API_KEY, R.string.github_api_key) { setting ->
+        SecureTextInputPreference(setting, Defaults.PREF_GITHUB_API_KEY)
     },
     Setting(context, Settings.PREF_OLLAMA_URL, R.string.ollama_url) { setting ->
         TextInputPreference(setting, Defaults.PREF_OLLAMA_URL)

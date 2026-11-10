@@ -233,7 +233,7 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
         <!-- Single-button widgets -->
         <receiver
             android:name="helium314.keyboard.latin.ai.DeskdropWidgetVoice"
-            android:label="Deskdrop Voice"
+            android:label="Hermes Voice"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -247,7 +247,7 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
 
         <receiver
             android:name="helium314.keyboard.latin.ai.DeskdropWidgetChat"
-            android:label="Deskdrop Chat"
+            android:label="Hermes Chat"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -260,7 +260,7 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
 
         <receiver
             android:name="helium314.keyboard.latin.ai.DeskdropWidgetExecute"
-            android:label="Deskdrop Execute"
+            android:label="Hermes Execute"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

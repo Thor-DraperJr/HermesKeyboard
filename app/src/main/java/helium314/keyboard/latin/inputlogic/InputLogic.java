@@ -2453,20 +2453,39 @@ public final class InputLogic {
 
         final String text = fieldText;
         if (text.trim().isEmpty()) {
-            showAiConfigurableEmptyHint();
-            return;
+            // One-tap Hermes reply: if the text field is empty but the user has copied an incoming
+            // message to the clipboard, automatically draft a reply using the copied message as context.
+            String clipReplySource = null;
+            try {
+                android.content.ClipboardManager cb = (android.content.ClipboardManager) mLatinIME.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                if (cb != null && cb.hasPrimaryClip()) {
+                    android.content.ClipData clip = cb.getPrimaryClip();
+                    if (clip != null && clip.getItemCount() > 0) {
+                        CharSequence clipText = clip.getItemAt(0).getText();
+                        if (clipText != null && clipText.toString().trim().length() > 0) {
+                            clipReplySource = clipText.toString().trim();
+                        }
+                    }
+                }
+            } catch (Exception ignored) {}
+            if (clipReplySource == null) {
+                showAiConfigurableEmptyHint();
+                return;
+            }
+            fieldText = "//reply";
         }
+        final String effectiveText = fieldText;
 
         // Detect inline // instruction (supports chaining: text //formal //translate)
         String inlineInstruction = null;
-        String inlineContent = text;
+        String inlineContent = effectiveText;
         // Find the FIRST non-URL // to capture the full chain
         int triggerIndex = -1;
         int searchFrom = 0;
-        while (searchFrom < text.length()) {
-            int idx = text.indexOf("//", searchFrom);
+        while (searchFrom < effectiveText.length()) {
+            int idx = effectiveText.indexOf("//", searchFrom);
             if (idx < 0) break;
-            if (idx > 0 && text.charAt(idx - 1) == ':') {
+            if (idx > 0 && effectiveText.charAt(idx - 1) == ':') {
                 // Skip URL schemes (http://, https://, ftp://)
                 searchFrom = idx + 2;
                 continue;
@@ -2475,12 +2494,12 @@ public final class InputLogic {
             break;
         }
         if (triggerIndex >= 0) {
-            String afterTrigger = text.substring(triggerIndex + 2);
+            String afterTrigger = effectiveText.substring(triggerIndex + 2);
             int newlinePos = afterTrigger.indexOf('\n');
             String candidate = (newlinePos >= 0 ? afterTrigger.substring(0, newlinePos) : afterTrigger).trim();
             if (!candidate.isEmpty()) {
                 inlineInstruction = candidate;
-                inlineContent = text.substring(0, triggerIndex).trim();
+                inlineContent = effectiveText.substring(0, triggerIndex).trim();
             }
         }
         // If inline instruction has no content, use clipboard as input
@@ -2537,7 +2556,7 @@ public final class InputLogic {
                     }
 
                     // Show preview panel instead of direct commit
-                    mLatinIME.showAiPreview(result);
+                    mLatinIME.showAiPreview(result, fClipboardUsed ? fInlineContent : null);
                     mLatinIME.setupAiPreviewButtons(
                         // Apply - uses current preview text (may have been tone-adjusted)
                         () -> {
@@ -2656,7 +2675,9 @@ public final class InputLogic {
                             mLatinIME.hideAiPreview();
                         },
                         // Result text for copy
-                        result
+                        result,
+                        // Clipboard context for tone chips
+                        fClipboardUsed ? fInlineContent : null
                     );
                 });
             } catch (Exception e) {
