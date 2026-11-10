@@ -2455,29 +2455,35 @@ public final class InputLogic {
         }
 
         final String text = fieldText;
+        String screenReplyContext = null;
         if (text.trim().isEmpty()) {
-            // One-tap Hermes reply: if the text field is empty but the user has copied an incoming
-            // message to the clipboard, automatically draft a reply using the copied message as context.
-            String clipReplySource = null;
+            // 1. Prefer reading the active conversation directly from the screen via HermesScreenContextService
             try {
-                android.content.ClipboardManager cb = (android.content.ClipboardManager) mLatinIME.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
-                if (cb != null && cb.hasPrimaryClip()) {
-                    android.content.ClipData clip = cb.getPrimaryClip();
-                    if (clip != null && clip.getItemCount() > 0) {
-                        CharSequence clipText = clip.getItemAt(0).getText();
-                        if (clipText != null && clipText.toString().trim().length() > 0) {
-                            clipReplySource = clipText.toString().trim();
+                screenReplyContext = helium314.keyboard.latin.ai.HermesScreenContextService.captureVisibleConversation();
+            } catch (Exception ignored) {}
+            // 2. Fallback: if screen context is unavailable, check clipboard
+            if (screenReplyContext == null || screenReplyContext.isEmpty()) {
+                try {
+                    android.content.ClipboardManager cb = (android.content.ClipboardManager) mLatinIME.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                    if (cb != null && cb.hasPrimaryClip()) {
+                        android.content.ClipData clip = cb.getPrimaryClip();
+                        if (clip != null && clip.getItemCount() > 0) {
+                            CharSequence clipText = clip.getItemAt(0).getText();
+                            if (clipText != null && clipText.toString().trim().length() > 0) {
+                                screenReplyContext = clipText.toString().trim();
+                            }
                         }
                     }
-                }
-            } catch (Exception ignored) {}
-            if (clipReplySource == null) {
+                } catch (Exception ignored) {}
+            }
+            if (screenReplyContext == null || screenReplyContext.isEmpty()) {
                 showAiConfigurableEmptyHint();
                 return;
             }
             fieldText = "//reply";
         }
         final String effectiveText = fieldText;
+        final String fScreenReplyContext = screenReplyContext;
 
         // Detect inline // instruction (supports chaining: text //formal //translate)
         String inlineInstruction = null;
@@ -2505,17 +2511,22 @@ public final class InputLogic {
                 inlineContent = effectiveText.substring(0, triggerIndex).trim();
             }
         }
-        // If inline instruction has no content, use clipboard as input
+        // If inline instruction has no content, use screen context or clipboard as input
         boolean clipboardUsed = false;
         if (inlineInstruction != null && inlineContent.isEmpty()) {
-            android.content.ClipboardManager cb = (android.content.ClipboardManager) mLatinIME.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
-            if (cb != null && cb.hasPrimaryClip()) {
-                android.content.ClipData clip = cb.getPrimaryClip();
-                if (clip != null && clip.getItemCount() > 0) {
-                    CharSequence clipText = clip.getItemAt(0).getText();
-                    if (clipText != null && clipText.length() > 0) {
-                        inlineContent = clipText.toString();
-                        clipboardUsed = true;
+            if (fScreenReplyContext != null && !fScreenReplyContext.isEmpty()) {
+                inlineContent = fScreenReplyContext;
+                clipboardUsed = true;
+            } else {
+                android.content.ClipboardManager cb = (android.content.ClipboardManager) mLatinIME.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                if (cb != null && cb.hasPrimaryClip()) {
+                    android.content.ClipData clip = cb.getPrimaryClip();
+                    if (clip != null && clip.getItemCount() > 0) {
+                        CharSequence clipText = clip.getItemAt(0).getText();
+                        if (clipText != null && clipText.length() > 0) {
+                            inlineContent = clipText.toString();
+                            clipboardUsed = true;
+                        }
                     }
                 }
             }
